@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم سفارش — نگین آب شادیاخ</title>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
+    :root {
+      --clr-primary:    #002c60;
+      --clr-primary-lt: #004080;
+      --clr-accent:     oklch(52% 0.14 145);
+      --clr-surface:    oklch(98% 0.005 230);
+      --clr-raised:     oklch(100% 0 0);
+      --clr-border:     oklch(88% 0.010 230);
+      --clr-muted:      oklch(55% 0.020 230);
+      --clr-body:       oklch(22% 0.025 230);
+      --clr-error:      oklch(50% 0.18 25);
+      --clr-success:    oklch(48% 0.14 145);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px;
+      --space-4: 16px; --space-5: 24px; --space-6: 32px;
+      font-family: 'Yekan Bakh', 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--clr-surface);
+      color: var(--clr-body);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: var(--space-6) var(--space-4);
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--clr-raised);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px oklch(0% 0 0 / 8%);
+      width: 100%;
+      max-width: 560px;
+      padding: var(--space-6);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-5);
+      border-bottom: 1px solid var(--clr-border);
+    }
+
+    .card-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--clr-primary);
+      line-height: 1.3;
+    }
+
+    .card-header p {
+      font-size: 0.85rem;
+      color: var(--clr-muted);
+      margin-top: var(--space-1);
+    }
+
+    fieldset {
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-5);
+    }
+
+    legend {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--clr-primary-lt);
+      padding: 0 var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .field-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+
+    .field-group.single { grid-template-columns: 1fr; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--clr-body);
+    }
+
+    label .unit {
+      font-weight: 400;
+      color: var(--clr-muted);
+      font-size: 0.8rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: var(--space-2) var(--space-3);
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--clr-body);
+      background: var(--clr-surface);
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      min-height: 44px;
+    }
+
+    input:hover, select:hover { border-color: oklch(75% 0.04 230); }
+
+    input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--clr-primary-lt);
+      outline-offset: 1px;
+      border-color: var(--clr-primary-lt);
+    }
+
+    input.error, select.error { border-color: var(--clr-error); }
+
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--clr-error);
+      min-height: 1.2em;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: var(--space-3) var(--space-5);
+      background: #002c60;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 48px;
+      transition: background 150ms ease, transform 100ms ease;
+    }
+
+    .btn-submit:hover:not(:disabled) { background: #004080; }
+    .btn-submit:active:not(:disabled) { transform: scale(0.99); }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .status-box {
+      display: none;
+      margin-top: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+
+    .status-box.success {
+      display: block;
+      background: oklch(96% 0.04 145);
+      border-color: oklch(80% 0.08 145);
+      color: oklch(30% 0.10 145);
+    }
+
+    .status-box.error {
+      display: block;
+      background: oklch(97% 0.04 25);
+      border-color: oklch(80% 0.08 25);
+      color: oklch(30% 0.12 25);
+    }
+
+    @media (max-width: 480px) {
+      .field-group { grid-template-columns: 1fr; }
+      .card { padding: var(--space-5) var(--space-4); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="card" role="main">
+  <div class="card-header">
+    <div>
+      <h1>فرم درخواست مشاوره و سفارش</h1>
+      <p>نگین آب شادیاخ — تصفیه آب و فاضلاب</p>
+    </div>
+  </div>
+
+  <form id="orderForm" novalidate>
+
+    <!-- اطلاعات متقاضی -->
+    <fieldset>
+      <legend>اطلاعات متقاضی</legend>
+      <div class="field-group">
+        <div class="field">
+          <label for="fullName">نام و نام‌خانوادگی</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="name" required>
+          <span class="field-error" aria-live="polite" id="fullName-err"></span>
+        </div>
+        <div class="field">
+          <label for="phone">شماره تماس</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" required
+                 pattern="^09[0-9]{9}$" inputmode="numeric">
+          <span class="field-error" aria-live="polite" id="phone-err"></span>
+        </div>
+      </div>
+      <div class="field-group single" style="margin-top:16px">
+        <div class="field">
+          <label for="company">نام سازمان / شرکت <span class="unit">(اختیاری)</span></label>
+          <input type="text" id="company" name="company">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- مشخصات فنی -->
+    <fieldset>
+      <legend>مشخصات فنی تصفیه‌خانه</legend>
+      <div class="field-group">
+        <div class="field">
+          <label for="flow">دبی طراحی <span class="unit">(m³/d)</span></label>
+          <input type="number" id="flow" name="flow" min="0" step="any" required inputmode="decimal">
+          <span class="field-error" aria-live="polite" id="flow-err"></span>
+        </div>
+        <div class="field">
+          <label for="cod">COD <span class="unit">(mg/L)</span></label>
+          <input type="number" id="cod" name="cod" min="0" step="any" required inputmode="decimal">
+          <span class="field-error" aria-live="polite" id="cod-err"></span>
+        </div>
+        <div class="field">
+          <label for="bod">BOD <span class="unit">(mg/L)</span></label>
+          <input type="number" id="bod" name="bod" min="0" step="any" required inputmode="decimal">
+          <span class="field-error" aria-live="polite" id="bod-err"></span>
+        </div>
+        <div class="field">
+          <label for="tss">TSS <span class="unit">(mg/L)</span></label>
+          <input type="number" id="tss" name="tss" min="0" step="any" required inputmode="decimal">
+          <span class="field-error" aria-live="polite" id="tss-err"></span>
+        </div>
+        <div class="field">
+          <label for="oil">روغن و گریس <span class="unit">(mg/L)</span></label>
+          <input type="number" id="oil" name="oil" min="0" step="any" required inputmode="decimal">
+          <span class="field-error" aria-live="polite" id="oil-err"></span>
+        </div>
+        <div class="field">
+          <label for="projectType">نوع پروژه</label>
+          <select id="projectType" name="projectType" required>
+            <option value="">انتخاب کنید…</option>
+            <option value="industrial">صنعتی</option>
+            <option value="municipal">شهری / بهداشتی</option>
+            <option value="agricultural">کشاورزی</option>
+            <option value="other">سایر</option>
+          </select>
+          <span class="field-error" aria-live="polite" id="projectType-err"></span>
+        </div>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn-submit" id="submitBtn">ارسال درخواست</button>
+
+    <div class="status-box" id="statusBox" role="alert"></div>
+  </form>
+</div>
+
+<script>
+  // ─── Config ───────────────────────────────────────────────────────────────
+  // توکن PAT با دسترسی محدود (فقط Actions: write روی همین ریپو)
+  // این توکن در سورس‌کد مرورگر قابل مشاهده است؛ از PAT با scope بسیار محدود استفاده کنید
+  const GH_PAT  = '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';   // ← مقدار واقعی GH_PAT را اینجا بگذارید
+  const GH_REPO = 'soshifunny/NAS-order-form';
+  const DISPATCH_URL = `https://api.github.com/repos/${GH_REPO}/dispatches`;
+
+  // ─── Validation rules ────────────────────────────────────────────────────
+  const rules = {
+    fullName:    { required: true, label: 'نام' },
+    phone:       { required: true, pattern: /^09[0-9]{9}$/, label: 'شماره تماس', msg: 'فرمت صحیح: 09XXXXXXXXX' },
+    flow:        { required: true, min: 0, label: 'دبی' },
+    cod:         { required: true, min: 0, label: 'COD' },
+    bod:         { required: true, min: 0, label: 'BOD' },
+    tss:         { required: true, min: 0, label: 'TSS' },
+    oil:         { required: true, min: 0, label: 'روغن' },
+    projectType: { required: true, label: 'نوع پروژه' },
+  };
+
+  function validateField(id) {
+    const rule = rules[id];
+    if (!rule) return true;
+    const el  = document.getElementById(id);
+    const err = document.getElementById(id + '-err');
+    const val = el.value.trim();
+    let msg   = '';
+
+    if (rule.required && !val) {
+      msg = `${rule.label} الزامی است.`;
+    } else if (rule.pattern && val && !rule.pattern.test(val)) {
+      msg = rule.msg || `${rule.label} نامعتبر است.`;
+    } else if (rule.min !== undefined && val !== '' && parseFloat(val) < rule.min) {
+      msg = `${rule.label} نمی‌تواند منفی باشد.`;
+    }
+
+    el.classList.toggle('error', !!msg);
+    if (err) err.textContent = msg;
+    return !msg;
+  }
+
+  // Blur-time validation
+  Object.keys(rules).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('blur', () => validateField(id));
+  });
+
+  // ─── Build SMS text ───────────────────────────────────────────────────────
+  function buildMessage(data) {
+    return [
+      '📋 سفارش جدید - NAS',
+      `نام: ${data.fullName}`,
+      `تلفن: ${data.phone}`,
+      data.company ? `شرکت: ${data.company}` : null,
+      `نوع: ${data.projectType}`,
+      `دبی: ${data.flow} m³/d`,
+      `COD: ${data.cod}  BOD: ${data.bod}  TSS: ${data.tss}  Oil: ${data.oil} mg/L`,
+    ].filter(Boolean).join('\n');
+  }
+
+  // ─── Status helper ────────────────────────────────────────────────────────
+  function showStatus(type, text) {
+    const box = document.getElementById('statusBox');
+    box.className = 'status-box ' + type;
+    box.textContent = text;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ─── Submit ───────────────────────────────────────────────────────────────
+  document.getElementById('orderForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // اعتبارسنجی همه فیلدها
+    const valid = Object.keys(rules).map(validateField).every(Boolean);
+    if (!valid) {
+      showStatus('error', 'لطفاً خطاهای فرم را برطرف کنید.');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'در حال ارسال…';
+
+    const data    = Object.fromEntries(new FormData(this));
+    const message = buildMessage(data);
+
+    try {
+      const response = await fetch(DISPATCH_URL, {
+        method: 'POST',
+        headers: {
+          'Accept':        'application/vnd.github+json',
+          'Authorization': `Bearer ${GH_PAT}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type':  'application/json',
+        },
+        body: JSON.stringify({
+          event_type:     'new-order',
+          client_payload: { message },
+        }),
+      });
+
+      // GitHub dispatch روی موفقیت 204 No Content برمی‌گرداند
+      if (response.status === 204 || response.ok) {
+        showStatus('success', '✅ درخواست شما با موفقیت ارسال شد. کارشناسان ما به زودی تماس می‌گیرند.');
+        this.reset();
+        Object.keys(rules).forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('error');
+        });
+      } else {
+        let detail = `کد خطا: ${response.status}`;
+        try {
+          const result = await response.json();
+          detail = result?.message || detail;
+        } catch { /* ignore */ }
+        throw new Error(detail);
+      }
+
+    } catch (err) {
+      showStatus('error', `❌ خطا در ارسال: ${err.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'ارسال درخواست';
+    }
+  });
+</script>
+</body>
+</html>
